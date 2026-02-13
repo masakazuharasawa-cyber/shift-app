@@ -21,7 +21,7 @@ creds = Credentials.from_service_account_info(
 client = gspread.authorize(creds)
 
 SHEET_NAME = "shift-data"
-sheet = client.open_by_key(1WwAUYrZL3dUcIeW98ssN1FhCltVJlPb720N-EBaxtXg).sheet1
+sheet = client.open_by_key("1WwAUYrZL3dUcIeW98ssN1FhCltVJlPb720N-EBaxtXg").sheet1
 
 # ==========================
 # パスワード
@@ -149,3 +149,4 @@ elif st.session_state.mode == "edit":
     if st.button("キャンセル"):
         st.session_state.mode = "view"
         st.rerun()
+
