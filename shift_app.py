@@ -141,16 +141,19 @@ elif st.session_state.mode == "edit":
         existing_data = sheet.get_all_records()
         existing_dict = {row["date"]: row["members"] for row in existing_data}
 
-        # 今月分だけ更新
+    # 今月分だけ更新
         for k, v in shift_data.items():
             existing_dict[k] = ", ".join(v)
 
-        # シートをクリアして書き直し
-        sheet.clear()
-        sheet.append_row(["date", "members"])
+    # ===== 一括書き込み用データ作成 =====
+        all_rows = [["date", "members"]]
 
         for k, v in existing_dict.items():
-            sheet.append_row([k, v])
+            all_rows.append([k, v])
+
+    # ===== シート全体を一括更新 =====
+        sheet.clear()
+        sheet.update("A1", all_rows)
 
         st.success("保存しました（他の月は消えません）")
         st.session_state.mode = "view"
@@ -159,3 +162,4 @@ elif st.session_state.mode == "edit":
     if st.button("キャンセル"):
         st.session_state.mode = "view"
         st.rerun()
+
