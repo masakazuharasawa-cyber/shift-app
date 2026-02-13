@@ -46,7 +46,7 @@ st.title("シフト管理アプリ")
 year = st.number_input("年", value=datetime.now().year)
 month = st.number_input("月", min_value=1, max_value=12, value=datetime.now().month)
 
-members = ["山田", "佐藤", "鈴木", "田中", "高橋"]
+members = ["井上", "洪", "原澤", "吉田", "勝村"]
 
 # ==========================
 # データ読み込み
@@ -162,4 +162,5 @@ elif st.session_state.mode == "edit":
     if st.button("キャンセル"):
         st.session_state.mode = "view"
         st.rerun()
+
 
