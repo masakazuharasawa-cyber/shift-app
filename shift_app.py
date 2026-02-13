@@ -136,30 +136,30 @@ elif st.session_state.mode == "edit":
         shift_data[date_key] = selected
         st.divider()
 
-    if st.button("💾 保存"):
+        if st.button("💾 保存"):
 
-    # 既存データを取得
-    existing_data = sheet.get_all_records()
-    existing_dict = {row["date"]: row["members"] for row in existing_data}
+        # 既存データを取得
+        existing_data = sheet.get_all_records()
+        existing_dict = {row["date"]: row["members"] for row in existing_data}
 
-    # 今月分だけ更新
-    for k, v in shift_data.items():
-        existing_dict[k] = ", ".join(v)
+        # 今月分だけ更新
+        for k, v in shift_data.items():
+            existing_dict[k] = ", ".join(v)
 
-    # シートを一度クリア
-    sheet.clear()
-    sheet.append_row(["date", "members"])
+        # シートを一度クリア
+        sheet.clear()
+        sheet.append_row(["date", "members"])
 
-    # 全データを書き戻す
-    for k, v in existing_dict.items():
-        sheet.append_row([k, v])
+        # 全データを書き戻す
+        for k, v in existing_dict.items():
+            sheet.append_row([k, v])
 
-    st.success("保存しました（他の月は消えません）")
-    st.session_state.mode = "view"
-    st.rerun()
-
+        st.success("保存しました（他の月は消えません）")
+        st.session_state.mode = "view"
+        st.rerun()
     if st.button("キャンセル"):
         st.session_state.mode = "view"
         st.rerun()
+
 
 
