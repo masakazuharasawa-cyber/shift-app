@@ -20,7 +20,6 @@ creds = Credentials.from_service_account_info(
 
 client = gspread.authorize(creds)
 
-SHEET_NAME = "shift-data"
 sheet = client.open_by_key("1WwAUYrZL3dUcIeW98ssN1FhCltVJlPb720N-EBaxtXg").sheet1
 
 # ==========================
@@ -55,14 +54,14 @@ members = ["山田", "佐藤", "鈴木", "田中", "高橋"]
 data = sheet.get_all_records()
 saved_data = {row["date"]: row["members"] for row in data}
 
-days_in_month = calendar.monthrange(year, month)[1]
+days_in_month = calendar.monthrange(int(year), int(month))[1]
 
 # ==========================
 # 閲覧モード
 # ==========================
 if st.session_state.mode == "view":
 
-    cal = calendar.monthcalendar(year, month)
+    cal = calendar.monthcalendar(int(year), int(month))
     weekdays = ["月","火","水","木","金","土","日"]
 
     cols = st.columns(7)
@@ -75,7 +74,7 @@ if st.session_state.mode == "view":
             if day == 0:
                 cols[i].write("")
             else:
-                date_key = f"{year}-{month}-{day}"
+                date_key = f"{int(year)}-{int(month)}-{day}"
                 names = saved_data.get(date_key, "")
 
                 if names:
@@ -111,7 +110,7 @@ elif st.session_state.mode == "edit":
     shift_data = {}
 
     for day in range(1, days_in_month + 1):
-        date_key = f"{year}-{month}-{day}"
+        date_key = f"{int(year)}-{int(month)}-{day}"
         st.markdown(f"### {day}日")
 
         selected = []
@@ -136,31 +135,27 @@ elif st.session_state.mode == "edit":
         shift_data[date_key] = selected
         st.divider()
 
-        if st.button("💾 保存"):
+    # ===== 保存ボタン（forの外）=====
+    if st.button("💾 保存"):
 
-        # 既存データを取得
-            existing_data = sheet.get_all_records()
-            existing_dict = {row["date"]: row["members"] for row in existing_data}
+        existing_data = sheet.get_all_records()
+        existing_dict = {row["date"]: row["members"] for row in existing_data}
 
         # 今月分だけ更新
-            for k, v in shift_data.items():
-                existing_dict[k] = ", ".join(v)
+        for k, v in shift_data.items():
+            existing_dict[k] = ", ".join(v)
 
-        # シートを一度クリア
-            sheet.clear()
-            sheet.append_row(["date", "members"])
+        # シートをクリアして書き直し
+        sheet.clear()
+        sheet.append_row(["date", "members"])
 
-        # 全データを書き戻す
-            for k, v in existing_dict.items():
-                sheet.append_row([k, v])
+        for k, v in existing_dict.items():
+            sheet.append_row([k, v])
 
         st.success("保存しました（他の月は消えません）")
         st.session_state.mode = "view"
         st.rerun()
+
     if st.button("キャンセル"):
         st.session_state.mode = "view"
         st.rerun()
-
-
-
-
