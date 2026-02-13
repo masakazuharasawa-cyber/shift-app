@@ -53,7 +53,7 @@ members = ["井上", "洪", "原澤", "吉田", "勝村"]
 # データ読み込み
 # ==========================
 data = sheet.get_all_records()
-saved_data = {row["date"]: row["members"] for row in data}
+saved_data = {row["data"]: row["members"] for row in data}
 
 days_in_month = calendar.monthrange(year, month)[1]
 
@@ -149,6 +149,7 @@ elif st.session_state.mode == "edit":
     if st.button("キャンセル"):
         st.session_state.mode = "view"
         st.rerun()
+
 
 
 
